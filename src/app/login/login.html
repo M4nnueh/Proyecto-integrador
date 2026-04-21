@@ -1,0 +1,72 @@
+<header class="header">
+  <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="d-flex align-items-center gap-2">
+      <i class="fas fa-graduation-cap fa-2x"></i>
+      <span class="fs-3 fw-semibold">NumTech Academy</span>
+    </div>
+    <nav class="d-flex gap-3 flex-wrap">
+      <a routerLink="/home" class="nav-link">Inicio</a>
+      <a routerLink="/nosotros" class="nav-link">Nosotros</a>
+      <div class="dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" id="cursosDropdown" data-bs-toggle="dropdown" aria-expanded="false">Cursos</a>
+        <ul class="dropdown-menu" aria-labelledby="cursosDropdown">
+          <li><a routerLink="/curso/taylor" class="dropdown-item">Polinomio de Taylor</a></li>
+          <li><a routerLink="/curso/ecuacion-1var" class="dropdown-item">Ecuaciones de 1 variable</a></li>
+          <li><a routerLink="/curso/aproximacion" class="dropdown-item">Aproximación de un polinomio</a></li>
+        </ul>
+      </div>
+      <a routerLink="/blog" class="nav-link">Blog</a>
+      <!-- No mostramos el botón de login en esta página -->
+    </nav>
+  </div>
+</header>
+
+<main class="bg-white py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5">
+            <h2 class="text-center mb-4 fw-bold">Iniciar sesión</h2>
+            <p class="text-center text-muted mb-4">Selecciona tu rol para acceder al dashboard</p>
+            <div class="mb-4">
+              <label class="form-label fw-semibold">Rol:</label>
+              <select class="form-select form-select-lg" [(ngModel)]="rol">
+                <option value="estudiante">Estudiante</option>
+                <option value="profesor">Profesor</option>
+                <option value="administrador">Administrador</option>
+              </select>
+            </div>
+            <button class="btn btn-cafe w-100 py-2 fw-bold" (click)="accederDashboard()">Acceder al dashboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer mt-auto py-4 bg-dark text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-graduation-cap fa-2x"></i>
+          <span class="fs-4">NumTech Academy</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5>Redes sociales</h5>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-white fs-3"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-white fs-3"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-white fs-3"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-white fs-3"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5>Contacto</h5>
+        <p>Tel: +1 222 333 4444<br>Email: info@numtechacademy.com<br>Dir: Calle Falsa 123, Ciudad</p>
+      </div>
+    </div>
+  </div>
+</footer>
