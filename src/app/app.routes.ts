@@ -6,11 +6,15 @@ import { DashboardEstudianteComponent } from './dashboard-estudiante/dashboard-e
 import { DashboardProfesorComponent } from './dashboard-profesor/dashboard-profesor';
 import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { BlogComponent } from './blog.component/blog.component';
+import { EvaluarComponent } from './evaluar/evaluar.component';
+import { Temas } from './temas/temas';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'nosotros', component: NosotrosComponent },
+  { path: 'evaluar', component: EvaluarComponent },
+  { path: 'temas', component: Temas },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard/estudiante', component: DashboardEstudianteComponent },
   { path: 'dashboard/profesor', component: DashboardProfesorComponent },

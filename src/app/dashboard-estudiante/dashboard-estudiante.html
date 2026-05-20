@@ -23,19 +23,72 @@
 
 <main class="bg-white py-5">
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="dashboard-card p-5 text-center">
-          <h1 class="display-4 fw-bold">Dashboard de Estudiante</h1>
-          <div class="my-5">
-            <i class="fas fa-chalkboard-user fa-4x text-muted mb-4"></i>
-            <h2 class="display-1 fw-bold text-secondary">Pendiente</h2>
-            <p class="lead">Esta sección está en desarrollo. Pronto encontrarás tu progreso, cursos y recursos exclusivos.</p>
-          </div>
-          <a routerLink="/home" class="btn btn-cafe btn-lg">Volver al inicio</a>
-        </div>
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10 text-center">
+        <h1 class="display-5 fw-bold">Bienvenido, Estudiante 👋</h1>
+        <p class="lead text-muted">Aquí encontrarás todo lo que necesitas para continuar con tu aprendizaje.</p>
       </div>
     </div>
+
+    <div class="row g-4 justify-content-center">
+
+      <!-- Cursos -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-book fa-3x text-warning"></i>
+          </div>
+          <h4 class="fw-bold">Cursos</h4>
+          <p class="text-muted">Accede a los cursos de Análisis Numérico disponibles para ti.</p>
+          <div class="mt-auto">
+            <div class="dropdown">
+              <button class="btn btn-warning w-100 dropdown-toggle" data-bs-toggle="dropdown">Ver Cursos</button>
+              <ul class="dropdown-menu w-100">
+                <li><a routerLink="/curso/taylor" class="dropdown-item">Polinomio de Taylor</a></li>
+                <li><a routerLink="/curso/ecuacion-1var" class="dropdown-item">Ecuaciones de 1 variable</a></li>
+                <li><a routerLink="/curso/aproximacion" class="dropdown-item">Aproximación de un polinomio</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Temas -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-layer-group fa-3x text-primary"></i>
+          </div>
+          <h4 class="fw-bold">Temas</h4>
+          <p class="text-muted">Consulta los temas y las bibliotecas de implementación disponibles.</p>
+          <div class="mt-auto">
+            <a routerLink="/temas" class="btn btn-primary w-100">Ver Temas</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evaluaciones -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-clipboard-check fa-3x text-success"></i>
+          </div>
+          <h4 class="fw-bold">Evaluaciones</h4>
+          <p class="text-muted">Revisa y completa tus evaluaciones académicas asignadas.</p>
+          <div class="mt-auto">
+            <a routerLink="/evaluar" class="btn btn-success w-100">Ver Evaluaciones</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-4 text-center">
+        <a routerLink="/home" class="btn btn-outline-secondary">← Volver al inicio</a>
+      </div>
+    </div>
+
   </div>
 </main>
 
