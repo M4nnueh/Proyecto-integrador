@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { TemasService } from './temas.service';
 import { Tema } from './tema.model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-temas',
@@ -14,6 +15,8 @@ import { Tema } from './tema.model';
 })
 export class Temas {
   private temasService = inject(TemasService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   
   // Reactividad con Signals
   temas = this.temasService.temas;
@@ -39,5 +42,15 @@ export class Temas {
 
   eliminarTema(id: string) {
     this.temasService.eliminarTema(id);
+  }
+
+  volver(): void {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      const rolRuta = user.rol === 'administrador' ? 'admin' : user.rol;
+      this.router.navigate([`/dashboard/${rolRuta}`]);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }
