@@ -1,0 +1,56 @@
+/* Copia todo el CSS del home (header, nav, .btn-cafe, etc.) */
+.header {
+  background-color: #F9E0AE;
+  color: black;
+}
+.nav-link {
+  color: black !important;
+  font-weight: 500;
+}
+.nav-link:hover {
+  text-decoration: underline;
+}
+.dropdown-menu {
+  background-color: white;
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+.dropdown-item:hover {
+  background-color: #F9E0AE;
+}
+.btn-danger {
+  background-color: red;
+  border-color: red;
+}
+.btn-cafe {
+  background-color: #8B4513;
+  border-color: #8B4513;
+  color: white;
+}
+.btn-cafe:hover {
+  background-color: #5a2d0c;
+  color: white;
+}
+.btn-outline-cafe {
+  border: 1px solid #8B4513;
+  color: #8B4513;
+  background: transparent;
+}
+.btn-outline-cafe:hover {
+  background-color: #8B4513;
+  color: white;
+}
+.object-fit-cover {
+  object-fit: cover;
+  height: 100%;
+  min-height: 250px;
+}
+@media (max-width: 768px) {
+  .header .container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  nav {
+    justify-content: center;
+  }
+}

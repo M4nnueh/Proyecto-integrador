@@ -1,0 +1,119 @@
+<header class="header">
+  <div class="container d-flex justify-content-between align-items-center py-3">
+    <div class="d-flex align-items-center gap-2">
+      <i class="fas fa-graduation-cap fa-2x"></i>
+      <span class="fs-3 fw-semibold">NumTech Academy</span>
+    </div>
+    <nav class="d-flex gap-3 flex-wrap">
+      <a routerLink="/home" class="nav-link">Inicio</a>
+      <a routerLink="/nosotros" class="nav-link">Nosotros</a>
+      <div class="dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Cursos</a>
+        <ul class="dropdown-menu">
+          <li><a routerLink="/curso/taylor" class="dropdown-item">Polinomio de Taylor</a></li>
+          <li><a routerLink="/curso/ecuacion-1var" class="dropdown-item">Ecuaciones de 1 variable</a></li>
+          <li><a routerLink="/curso/aproximacion" class="dropdown-item">Aproximación de un polinomio</a></li>
+        </ul>
+      </div>
+      <a routerLink="/blog" class="nav-link">Blog</a>
+      <!-- En dashboard no mostramos botón de login, pero puedes comentarlo -->
+    </nav>
+  </div>
+</header>
+
+<main class="bg-white py-5">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10 text-center">
+        <h1 class="display-5 fw-bold">Bienvenido, Estudiante 👋</h1>
+        <p class="lead text-muted">Aquí encontrarás todo lo que necesitas para continuar con tu aprendizaje.</p>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+      <!-- Cursos -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-book fa-3x text-warning"></i>
+          </div>
+          <h4 class="fw-bold">Cursos</h4>
+          <p class="text-muted">Accede a los cursos de Análisis Numérico disponibles para ti.</p>
+          <div class="mt-auto">
+            <div class="dropdown">
+              <button class="btn btn-warning w-100 dropdown-toggle" data-bs-toggle="dropdown">Ver Cursos</button>
+              <ul class="dropdown-menu w-100">
+                <li><a routerLink="/curso/taylor" class="dropdown-item">Polinomio de Taylor</a></li>
+                <li><a routerLink="/curso/ecuacion-1var" class="dropdown-item">Ecuaciones de 1 variable</a></li>
+                <li><a routerLink="/curso/aproximacion" class="dropdown-item">Aproximación de un polinomio</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Temas -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-layer-group fa-3x text-primary"></i>
+          </div>
+          <h4 class="fw-bold">Temas</h4>
+          <p class="text-muted">Consulta los temas y las bibliotecas de implementación disponibles.</p>
+          <div class="mt-auto">
+            <a routerLink="/temas" class="btn btn-primary w-100">Ver Temas</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Evaluaciones -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0 text-center p-4">
+          <div class="mb-3">
+            <i class="fas fa-clipboard-check fa-3x text-success"></i>
+          </div>
+          <h4 class="fw-bold">Evaluaciones</h4>
+          <p class="text-muted">Revisa y completa tus evaluaciones académicas asignadas.</p>
+          <div class="mt-auto">
+            <a routerLink="/evaluar" class="btn btn-success w-100">Ver Evaluaciones</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-4 text-center">
+        <a routerLink="/home" class="btn btn-outline-secondary">← Volver al inicio</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer mt-auto py-4 bg-dark text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-graduation-cap fa-2x"></i>
+          <span class="fs-4">NumTech Academy</span>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5>Redes sociales</h5>
+        <div class="d-flex gap-3">
+          <a href="#" class="text-white fs-3"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-white fs-3"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-white fs-3"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-white fs-3"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h5>Contacto</h5>
+        <p>Tel: +1 222 333 4444<br>Email: info@numtechacademy.com<br>Dir: Calle Falsa 123, Ciudad</p>
+      </div>
+    </div>
+  </div>
+</footer>

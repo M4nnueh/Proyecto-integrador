@@ -1,0 +1,44 @@
+/* Copia todo el CSS del home (header, nav, etc.) */
+.header {
+  background-color: #F9E0AE;
+  color: black;
+}
+.nav-link {
+  color: black !important;
+  font-weight: 500;
+}
+.nav-link:hover {
+  text-decoration: underline;
+}
+.dropdown-menu {
+  background-color: white;
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+.dropdown-item:hover {
+  background-color: #F9E0AE;
+}
+.btn-cafe {
+  background-color: #8B4513;
+  border-color: #8B4513;
+  color: white;
+}
+.btn-cafe:hover {
+  background-color: #5a2d0c;
+  color: white;
+}
+.dashboard-card {
+  background-color: #ffffff;
+  border: 2px solid #e0a800; /* borde dorado para destacar */
+  border-radius: 30px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 768px) {
+  .header .container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  nav {
+    justify-content: center;
+  }
+}
