@@ -1,9 +1,10 @@
 import { Component, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { EvaluarService } from './evaluar.service';
 import { Evaluacion } from './evaluar.model';
+import { AuthService } from '../services/auth.service';
 
 type Vista = 'lista' | 'nueva' | 'detalle';
 
@@ -16,10 +17,23 @@ type Vista = 'lista' | 'nueva' | 'detalle';
 })
 export class EvaluarComponent {
   private svc = inject(EvaluarService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
   readonly evaluaciones = this.svc.evaluaciones;
 
   vista = signal<Vista>('lista');
   evaluacionSeleccionada = signal<Evaluacion | null>(null);
+
+  volver(): void {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      const rolRuta = user.rol === 'administrador' ? 'admin' : user.rol;
+      this.router.navigate([`/dashboard/${rolRuta}`]);
+    } else {
+      this.router.navigate(['/']);
+    }
+  }
 
   nuevoTitulo = '';
   errorTitulo = '';
