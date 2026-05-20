@@ -1,6 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { EvaluarService } from './evaluar.service';
 import { Evaluacion } from './evaluar.model';
 
@@ -9,7 +10,7 @@ type Vista = 'lista' | 'nueva' | 'detalle';
 @Component({
   selector: 'app-evaluar',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink],
   templateUrl: './evaluar.component.html',
   styleUrl: './evaluar.component.css',
 })
