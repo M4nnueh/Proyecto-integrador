@@ -1,0 +1,77 @@
+<app-header></app-header>
+
+<main class="anuncios-container">
+  <div class="anuncios-header">
+    <div class="header-content">
+      <h1 class="page-title">Tablón de Anuncios</h1>
+      <p class="page-subtitle">Mantente al día con las últimas noticias y actualizaciones institucionales.</p>
+    </div>
+    
+    <button *ngIf="esAdminOProfesor" 
+            class="btn-primary create-btn" 
+            (click)="toggleFormulario()">
+      <span class="icon" *ngIf="!mostrarFormulario">+</span>
+      <span class="icon" *ngIf="mostrarFormulario">✕</span>
+      {{ mostrarFormulario ? 'Cancelar' : 'Nuevo Anuncio' }}
+    </button>
+  </div>
+
+  <!-- Formulario para crear anuncio -->
+  <div class="form-container glass-panel" [class.show]="mostrarFormulario">
+    <h2>Publicar un Comunicado</h2>
+    <form (ngSubmit)="crearAnuncio()">
+      <div class="form-group">
+        <label for="titulo">Título del Anuncio</label>
+        <input 
+          type="text" 
+          id="titulo" 
+          name="titulo" 
+          [(ngModel)]="nuevoAnuncio.titulo" 
+          placeholder="Escribe un título llamativo..."
+          required
+        >
+      </div>
+      <div class="form-group">
+        <label for="contenido">Contenido Informativo</label>
+        <textarea 
+          id="contenido" 
+          name="contenido" 
+          [(ngModel)]="nuevoAnuncio.contenido" 
+          rows="4"
+          placeholder="Detalla la información aquí..."
+          required
+        ></textarea>
+      </div>
+      <button type="submit" class="btn-primary submit-btn" [disabled]="!nuevoAnuncio.titulo || !nuevoAnuncio.contenido">
+        Publicar Ahora
+      </button>
+    </form>
+  </div>
+
+  <!-- Lista de Anuncios -->
+  <div class="anuncios-grid" *ngIf="anuncios.length > 0; else noAnuncios">
+    <article class="anuncio-card" *ngFor="let anuncio of anuncios; let i = index" [style.animation-delay]="i * 0.1 + 's'">
+      <div class="card-glow"></div>
+      <div class="card-content">
+        <div class="card-badge">Comunicado</div>
+        <h2 class="anuncio-title">{{ anuncio.titulo }}</h2>
+        <p class="anuncio-text">{{ anuncio.contenido }}</p>
+        <div class="anuncio-footer">
+          <div class="date-container">
+            <span class="date-icon">📅</span>
+            <span class="date-text">{{ anuncio.fecha_creacion | date:'longDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #noAnuncios>
+    <div class="empty-state">
+      <div class="empty-icon">📢</div>
+      <h3>No hay anuncios por el momento</h3>
+      <p>Vuelve más tarde para ver nuevas actualizaciones.</p>
+    </div>
+  </ng-template>
+
+</main>

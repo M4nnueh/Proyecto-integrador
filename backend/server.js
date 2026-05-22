@@ -213,6 +213,54 @@ app.get('/api/admin/stats', async (req, res) => {
   }
 });
 
+// Endpoint para obtener todos los anuncios
+app.get('/api/anuncios', async (req, res) => {
+  try {
+    const query = 'SELECT id, titulo, contenido, fecha_creacion FROM anuncios ORDER BY fecha_creacion DESC';
+    const result = await pool.query(query);
+
+    return res.json({
+      success: true,
+      anuncios: result.rows
+    });
+  } catch (error) {
+    console.error('Error en /api/anuncios (GET):', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Ocurrió un error al obtener los anuncios.' 
+    });
+  }
+});
+
+// Endpoint para crear un nuevo anuncio
+app.post('/api/anuncios', async (req, res) => {
+  const { titulo, contenido } = req.body;
+
+  if (!titulo || !contenido) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'El título y el contenido son obligatorios.' 
+    });
+  }
+
+  try {
+    const query = 'INSERT INTO anuncios (titulo, contenido) VALUES ($1, $2) RETURNING id, titulo, contenido, fecha_creacion';
+    const result = await pool.query(query, [titulo, contenido]);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Anuncio creado exitosamente.',
+      anuncio: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error en /api/anuncios (POST):', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Ocurrió un error al crear el anuncio.' 
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Servidor backend corriendo en http://localhost:${port}`);
 });
