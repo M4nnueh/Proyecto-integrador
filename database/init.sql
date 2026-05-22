@@ -15,3 +15,19 @@ VALUES
     ('Maria Profesora', 'profesor@numtech.com', 'profesor123', 'profesor'),
     ('Carlos Administrador', 'admin@numtech.com', 'admin123', 'administrador')
 ON CONFLICT (email) DO NOTHING;
+
+-- Crear tabla de anuncios
+CREATE TABLE IF NOT EXISTS anuncios (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    contenido TEXT NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insertar anuncios de prueba
+INSERT INTO anuncios (titulo, contenido)
+VALUES 
+    ('¡Bienvenidos al nuevo semestre!', 'Estamos muy emocionados de darles la bienvenida a todos los estudiantes a este nuevo ciclo escolar. ¡Mucho éxito en sus proyectos!'),
+    ('Mantenimiento del sistema', 'El próximo sábado a las 2:00 AM realizaremos labores de mantenimiento en la plataforma. Esperamos que el servicio se restablezca a las 4:00 AM.'),
+    ('Nuevos cursos disponibles', 'Se han abierto las inscripciones para los nuevos cursos optativos de la facultad de ingeniería. Revisa la sección de cursos para más detalles.');
+
