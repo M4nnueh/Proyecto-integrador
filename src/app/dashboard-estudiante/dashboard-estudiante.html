@@ -30,7 +30,7 @@
                   <span class="dropdown-item text-muted">No estás inscrito en ningún curso.</span>
                 </li>
                 <li *ngFor="let curso of cursos">
-                  <a [routerLink]="curso.url_ruta" class="dropdown-item">{{ curso.nombre }}</a>
+                  <a [routerLink]="curso.urlRuta" class="dropdown-item">{{ curso.nombre }}</a>
                 </li>
               </ul>
             </div>

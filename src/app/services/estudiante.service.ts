@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface Curso {
   id: number;
   nombre: string;
-  url_ruta: string;
+  urlRuta: string;
   descripcion?: string;
 }
 
@@ -19,7 +19,7 @@ export interface CursosResponse {
   providedIn: 'root'
 })
 export class EstudianteService {
-  private apiUrl = 'http://localhost:3000/api/estudiantes';
+  private apiUrl = 'http://localhost:8080/api/estudiantes';
 
   constructor(private http: HttpClient) {}
 

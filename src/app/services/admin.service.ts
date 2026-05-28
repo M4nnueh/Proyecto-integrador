@@ -8,7 +8,7 @@ export interface AdminStats {
   totalEstudiantes: number;
   totalProfesores: number;
   totalAdmins: number;
-  ultimosUsuarios: (User & { fecha_creacion: string })[];
+  ultimosUsuarios: (User & { fechaCreacion: string })[];
 }
 
 export interface StatsResponse {
@@ -21,7 +21,7 @@ export interface StatsResponse {
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://localhost:3000/api/admin';
+  private apiUrl = 'http://localhost:8080/api/admin';
 
   constructor(private http: HttpClient) {}
 

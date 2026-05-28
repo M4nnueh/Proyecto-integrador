@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Chart, registerables } from 'chart.js';
+import { combineLatest, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 import { HeaderComponent } from '../components/header/header.component';
 import { AdminService, AdminStats } from '../services/admin.service';
-import { Chart, registerables } from 'chart.js';
+import { AuthService } from '../services/auth.service';
 
 Chart.register(...registerables);
 
@@ -14,40 +17,82 @@ Chart.register(...registerables);
   templateUrl: './dashboard-admin.html',
   styleUrls: ['./dashboard-admin.css'],
 })
-export class DashboardAdminComponent implements OnInit {
+export class DashboardAdminComponent implements OnInit, AfterViewChecked, OnDestroy {
   rol = 'Administrador';
   stats: AdminStats | null = null;
   isLoading = true;
   errorMessage = '';
-  
+
+  @ViewChild('pieChartCanvas') pieChartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('barChartCanvas') barChartCanvas!: ElementRef<HTMLCanvasElement>;
+
   private pieChart: Chart | null = null;
   private barChart: Chart | null = null;
+  private chartsPending = false;
+  private destroy$ = new Subject<void>();
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.cargarEstadisticas();
+    combineLatest([this.authService.authReady$, this.authService.currentUser$]).pipe(
+      filter(([ready]) => ready),
+      map(([, user]) => user),
+      distinctUntilChanged((previous, current) => previous?.email === current?.email && previous?.rol === current?.rol),
+      takeUntil(this.destroy$)
+    ).subscribe(user => {
+      if (user?.rol === 'administrador') {
+        this.cargarEstadisticas();
+        return;
+      }
+
+      this.limpiarEstado();
+      const dashboardRoute = this.authService.getDashboardRoute(user);
+      this.router.navigateByUrl(dashboardRoute || '/login', { replaceUrl: true });
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.chartsPending && this.stats && this.pieChartCanvas?.nativeElement && this.barChartCanvas?.nativeElement) {
+      this.chartsPending = false;
+      this.crearGraficas();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.destroyCharts();
   }
 
   cargarEstadisticas(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
+    this.destroyCharts();
+
     this.adminService.getDashboardStats().subscribe({
       next: (response) => {
         if (response.success && response.stats) {
-          this.stats = response.stats;
-          // Esperar a que Angular renderice el DOM antes de crear los charts
-          setTimeout(() => this.crearGraficas(), 100);
+          this.stats = this.normalizeStats(response.stats);
+          this.isLoading = false;
+          this.chartsPending = true;
+          this.cdr.detectChanges();
         } else {
-          this.errorMessage = response.message || 'Error al cargar las estadísticas';
+          this.stats = null;
+          this.errorMessage = response.message || 'Error al cargar las estadisticas';
+          this.isLoading = false;
         }
-        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching admin stats:', err);
-        this.errorMessage = 'Ocurrió un error al intentar conectar con el servidor.';
+        this.stats = null;
+        this.errorMessage = 'Ocurrio un error al intentar conectar con el servidor.';
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -55,14 +100,10 @@ export class DashboardAdminComponent implements OnInit {
   crearGraficas(): void {
     if (!this.stats) return;
 
-    // Destruir charts previos si existen (para evitar duplicados al recargar)
-    if (this.pieChart) this.pieChart.destroy();
-    if (this.barChart) this.barChart.destroy();
+    try {
+      this.destroyCharts();
 
-    // === GRÁFICA CIRCULAR (Pie Chart) ===
-    const pieCanvas = document.getElementById('pieChartRoles') as HTMLCanvasElement;
-    if (pieCanvas) {
-      this.pieChart = new Chart(pieCanvas, {
+      this.pieChart = new Chart(this.pieChartCanvas.nativeElement, {
         type: 'doughnut',
         data: {
           labels: ['Estudiantes', 'Profesores', 'Administradores'],
@@ -72,101 +113,67 @@ export class DashboardAdminComponent implements OnInit {
               this.stats.totalProfesores,
               this.stats.totalAdmins
             ],
-            backgroundColor: [
-              'rgba(25, 135, 84, 0.85)',
-              'rgba(13, 202, 240, 0.85)',
-              'rgba(255, 193, 7, 0.85)'
-            ],
-            borderColor: [
-              'rgba(25, 135, 84, 1)',
-              'rgba(13, 202, 240, 1)',
-              'rgba(255, 193, 7, 1)'
-            ],
-            borderWidth: 2,
-            hoverOffset: 10
+            backgroundColor: ['#198754', '#0dcaf0', '#ffc107']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                padding: 20,
-                usePointStyle: true,
-                pointStyleWidth: 12,
-                font: { size: 13 }
-              }
-            },
-            title: {
-              display: true,
-              text: 'Distribución por Rol',
-              font: { size: 16, weight: 'bold' },
-              padding: { bottom: 15 }
-            }
+            legend: { position: 'bottom' }
           }
         }
       });
-    }
 
-    // === GRÁFICA DE BARRAS (Bar Chart) ===
-    const barCanvas = document.getElementById('barChartRoles') as HTMLCanvasElement;
-    if (barCanvas) {
-      this.barChart = new Chart(barCanvas, {
+      this.barChart = new Chart(this.barChartCanvas.nativeElement, {
         type: 'bar',
         data: {
           labels: ['Estudiantes', 'Profesores', 'Administradores'],
           datasets: [{
-            label: 'Cantidad de usuarios',
+            label: 'Usuarios',
             data: [
               this.stats.totalEstudiantes,
               this.stats.totalProfesores,
               this.stats.totalAdmins
             ],
-            backgroundColor: [
-              'rgba(25, 135, 84, 0.7)',
-              'rgba(13, 202, 240, 0.7)',
-              'rgba(255, 193, 7, 0.7)'
-            ],
-            borderColor: [
-              'rgba(25, 135, 84, 1)',
-              'rgba(13, 202, 240, 1)',
-              'rgba(255, 193, 7, 1)'
-            ],
-            borderWidth: 2,
-            borderRadius: 8,
-            barPercentage: 0.6
+            backgroundColor: ['#198754', '#0dcaf0', '#ffc107']
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: 'Usuarios por Rol',
-              font: { size: 16, weight: 'bold' },
-              padding: { bottom: 15 }
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                stepSize: 1,
-                font: { size: 12 }
-              },
-              grid: { color: 'rgba(0,0,0,0.05)' }
-            },
-            x: {
-              ticks: { font: { size: 13 } },
-              grid: { display: false }
-            }
+            legend: { display: false }
           }
         }
       });
+    } catch (e) {
+      console.error('Error al dibujar las graficas:', e);
     }
+  }
+
+  private normalizeStats(stats: AdminStats): AdminStats {
+    return {
+      totalUsuarios: Number(stats.totalUsuarios) || 0,
+      totalEstudiantes: Number(stats.totalEstudiantes) || 0,
+      totalProfesores: Number(stats.totalProfesores) || 0,
+      totalAdmins: Number(stats.totalAdmins) || 0,
+      ultimosUsuarios: stats.ultimosUsuarios || []
+    };
+  }
+
+  private destroyCharts(): void {
+    this.pieChart?.destroy();
+    this.barChart?.destroy();
+    this.pieChart = null;
+    this.barChart = null;
+  }
+
+  private limpiarEstado(): void {
+    this.stats = null;
+    this.errorMessage = '';
+    this.isLoading = false;
+    this.chartsPending = false;
+    this.destroyCharts();
   }
 }
