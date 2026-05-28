@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TemasService } from './temas.service';
 import { Tema } from './tema.model';
 import { AuthService } from '../services/auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-temas',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule],
   templateUrl: './temas.html',
   styleUrl: './temas.css'
 })

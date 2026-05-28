@@ -7,56 +7,20 @@
         <div class="card shadow-lg border-0 rounded-4">
           <div class="card-body p-5">
             <h2 class="text-center mb-4 fw-bold">Iniciar sesión</h2>
-            <p class="text-center text-muted mb-4">Ingresa tus credenciales para acceder</p>
+            <p class="text-center text-muted mb-4">Ingresa tus credenciales para acceder a la plataforma a través de nuestro servidor seguro.</p>
             
             <!-- Mensaje de Error -->
             <div *ngIf="errorMessage" class="alert alert-danger p-2 mb-3 text-center small rounded-3" role="alert">
               <i class="fas fa-exclamation-circle me-1"></i> {{ errorMessage }}
             </div>
 
-            <!-- Campo de Email -->
-            <div class="mb-3">
-              <label for="email" class="form-label fw-semibold">Correo electrónico</label>
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
-                <input 
-                  type="email" 
-                  id="email" 
-                  class="form-control border-start-0" 
-                  placeholder="ejemplo@numtech.com" 
-                  [(ngModel)]="email"
-                  [disabled]="isLoading"
-                  required
-                />
-              </div>
-            </div>
-
-            <!-- Campo de Contraseña -->
-            <div class="mb-4">
-              <label for="password" class="form-label fw-semibold">Contraseña</label>
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
-                <input 
-                  type="password" 
-                  id="password" 
-                  class="form-control border-start-0" 
-                  placeholder="••••••••" 
-                  [(ngModel)]="password"
-                  [disabled]="isLoading"
-                  required
-                  (keyup.enter)="accederDashboard()"
-                />
-              </div>
-            </div>
-
-            <!-- Botón de Acceso -->
+            <!-- Botón de Acceso a Keycloak -->
             <button 
               class="btn btn-cafe w-100 py-2 fw-bold d-flex align-items-center justify-content-center gap-2" 
-              (click)="accederDashboard()"
-              [disabled]="isLoading"
+              (click)="login()"
             >
-              <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-              {{ isLoading ? 'Iniciando sesión...' : 'Ingresar' }}
+              <i class="fas fa-sign-in-alt"></i>
+              Iniciar sesión con Keycloak
             </button>
 
             <!-- Link al registro -->

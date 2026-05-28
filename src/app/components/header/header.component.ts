@@ -31,19 +31,7 @@ export class HeaderComponent implements OnInit {
   }
 
   goToDashboard() {
-    if (this.currentUser) {
-      switch (this.currentUser.rol) {
-        case 'estudiante':
-          this.router.navigate(['/dashboard/estudiante']);
-          break;
-        case 'profesor':
-          this.router.navigate(['/dashboard/profesor']);
-          break;
-        case 'administrador':
-          this.router.navigate(['/dashboard/admin']);
-          break;
-      }
-    }
+    this.authService.navigateToCurrentUserDashboard();
   }
 
   logout() {

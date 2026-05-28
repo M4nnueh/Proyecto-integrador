@@ -2,18 +2,117 @@
 
 <main class="bg-white py-5">
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="dashboard-card p-5 text-center">
-          <h1 class="display-4 fw-bold">Dashboard de Profesor</h1>
-          <div class="my-5">
-            <i class="fas fa-chalkboard-user fa-4x text-muted mb-4"></i>
-            <h2 class="display-1 fw-bold text-secondary">Pendiente</h2>
-            <p class="lead">Esta sección está en desarrollo. Pronto encontrarás tu progreso, cursos y recursos exclusivos.</p>
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10 text-center">
+        <h1 class="display-5 fw-bold">Panel de Profesor</h1>
+        <p class="lead text-muted">Supervisa el progreso académico y gestiona tus cursos de Análisis Numérico.</p>
+        <button class="btn btn-primary mt-2" (click)="cargarEstadisticas()" [disabled]="isLoading">
+          <i class="fas" [ngClass]="{'fa-sync-alt': true, 'fa-spin': isLoading}"></i> Actualizar
+        </button>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage" class="alert alert-danger text-center">
+      <i class="fas fa-exclamation-triangle me-2"></i> {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2 text-muted">Cargando estadísticas...</p>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div *ngIf="!isLoading && !errorMessage && stats">
+      
+      <!-- KPIs Cards -->
+      <div class="row g-4 justify-content-center mb-5">
+        <!-- Cursos Impartidos -->
+        <div class="col-md-3">
+          <div class="card h-100 shadow-sm border-0 text-center p-4">
+            <div class="mb-3">
+              <i class="fas fa-book fa-3x text-primary"></i>
+            </div>
+            <h5 class="fw-bold">Cursos</h5>
+            <h2 class="display-4 text-primary">{{ stats.cursosImpartidos }}</h2>
           </div>
-          <a routerLink="/home" class="btn btn-cafe btn-lg">Volver al inicio</a>
+        </div>
+
+        <!-- Alumnos Activos -->
+        <div class="col-md-3">
+          <div class="card h-100 shadow-sm border-0 text-center p-4">
+            <div class="mb-3">
+              <i class="fas fa-user-graduate fa-3x text-success"></i>
+            </div>
+            <h5 class="fw-bold">Alumnos</h5>
+            <h2 class="display-4 text-success">{{ stats.alumnosActivos }}</h2>
+          </div>
+        </div>
+
+        <!-- Evaluaciones Pendientes -->
+        <div class="col-md-3">
+          <div class="card h-100 shadow-sm border-0 text-center p-4">
+            <div class="mb-3">
+              <i class="fas fa-tasks fa-3x text-warning"></i>
+            </div>
+            <h5 class="fw-bold">Por Evaluar</h5>
+            <h2 class="display-4 text-warning">{{ stats.evaluacionesPendientes }}</h2>
+          </div>
+        </div>
+
+        <!-- Promedio General -->
+        <div class="col-md-3">
+          <div class="card h-100 shadow-sm border-0 text-center p-4">
+            <div class="mb-3">
+              <i class="fas fa-star fa-3x text-info"></i>
+            </div>
+            <h5 class="fw-bold">Promedio</h5>
+            <h2 class="display-4 text-info">{{ stats.promedioGeneral }}</h2>
+          </div>
         </div>
       </div>
+
+      <!-- Main Layout: Gráfica y Acciones -->
+      <div class="row g-4 mb-4">
+        <!-- Gráfica de Rendimiento -->
+        <div class="col-lg-8">
+          <div class="card shadow-sm border-0 h-100 p-3">
+            <div class="card-body">
+              <h5 class="fw-bold text-center mb-4"><i class="fas fa-chart-line text-success me-2"></i>Rendimiento por Unidad</h5>
+              <div style="position: relative; height: 300px; width: 100%;">
+                <canvas #lineChartCanvas></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="col-lg-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white border-bottom p-3">
+              <h5 class="fw-bold mb-0 text-primary"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+            </div>
+            <div class="card-body p-4 d-flex flex-column gap-3">
+              <button class="btn btn-primary w-100 py-3 text-start fw-semibold shadow-sm">
+                <i class="fas fa-plus-circle me-2"></i> Nuevo Curso
+              </button>
+              <button class="btn btn-success w-100 py-3 text-start fw-semibold shadow-sm">
+                <i class="fas fa-file-alt me-2"></i> Crear Evaluación
+              </button>
+              <button class="btn btn-warning w-100 py-3 text-start fw-semibold shadow-sm text-dark">
+                <i class="fas fa-bullhorn me-2"></i> Publicar Anuncio
+              </button>
+              <button class="btn btn-outline-secondary w-100 py-3 text-start fw-semibold shadow-sm mt-auto">
+                <i class="fas fa-cog me-2"></i> Ajustes de Curso
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
