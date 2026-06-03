@@ -1,0 +1,153 @@
+<div class="ev-shell">
+  <header class="ev-header">
+    <div class="ev-header__brand">
+      <span class="ev-logo">💡</span>
+      <span class="ev-header__title">Preguntas</span>
+    </div>
+    <p class="ev-header__sub">Pruebas Generales y Conocimiento Teórico</p>
+    <button
+      class="btn btn--ghost btn--back"
+      style="margin-top: 0.5rem; display: inline-block"
+      (click)="volver()"
+    >
+      ← Volver al Dashboard
+    </button>
+  </header>
+
+  @if (vista() === 'lista') {
+    <section class="ev-section">
+      <div class="ev-section__top">
+        <h2 class="ev-section__h2">Pruebas Teóricas Registradas</h2>
+        <button class="btn btn--primary" (click)="irANueva()">+ Nueva prueba general</button>
+      </div>
+
+      @if (pruebas().length === 0) {
+        <div class="ev-empty">
+          <span class="ev-empty__icon">📋</span>
+          <p>Aún no hay pruebas generales.<br />Crea la primera para añadir reactivos teóricos.</p>
+        </div>
+      }
+
+      <ul class="ev-cards">
+        @for (pr of pruebas(); track pr.id) {
+          <li class="ev-card" (click)="abrirDetalle(pr)">
+            <div class="ev-card__head">
+              <span class="ev-card__titulo">{{ pr.titulo }}</span>
+              <button
+                class="btn btn--danger btn--sm"
+                (click)="$event.stopPropagation(); eliminar(pr.id)"
+              >
+                ✕
+              </button>
+            </div>
+            <div class="ev-card__meta">
+              <span>{{ pr.preguntas.length }} pregunta(s) teórica(s)</span>
+              <span>{{ pr.fechaCreacion | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="ev-card__final nota-alta" style="margin-top: 0.5rem; text-align: center">
+              Modo: <strong>Autoaprendizaje / Repaso Teórico</strong>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  @if (vista() === 'nueva') {
+    <section class="ev-section ev-section--form">
+      <button class="btn btn--ghost btn--back" (click)="irALista()">← Volver</button>
+      <h2 class="ev-section__h2">Registrar nueva prueba teórica</h2>
+      <div class="ev-form">
+        <label class="ev-label" for="tituloInput">Título de la prueba o tema</label>
+        <input
+          id="tituloInput"
+          class="ev-input"
+          type="text"
+          placeholder="Ej: Conceptos Generales de Bases de Datos"
+          [(ngModel)]="nuevoTitulo"
+          (keyup.enter)="crearPrueba()"
+        />
+        @if (errorTitulo) {
+          <span class="ev-error">{{ errorTitulo }}</span>
+        }
+        <button class="btn btn--primary btn--full" (click)="crearPrueba()">
+          Crear banco de preguntas
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (vista() === 'detalle' && pruebaSeleccionada(); as pr) {
+    <section class="ev-section">
+      <button class="btn btn--ghost btn--back" (click)="irALista()">← Volver a la lista</button>
+
+      <div class="ev-detalle-header">
+        <h2 class="ev-section__h2">{{ pr.titulo }}</h2>
+        <span class="ev-badge nota-alta"> Teórica </span>
+      </div>
+
+      <div class="ev-form ev-form--inline">
+        <h3 class="ev-form__title">Agregar pregunta teórica general</h3>
+        <label class="ev-label">Texto de la pregunta</label>
+        <textarea
+          class="ev-input ev-textarea"
+          rows="2"
+          placeholder="Ej: ¿Qué significa ACID en bases de datos relacionales?"
+          [(ngModel)]="nuevaPregunta"
+        ></textarea>
+        <label class="ev-label">Respuesta teórica esperada</label>
+        <textarea
+          class="ev-input ev-textarea"
+          rows="2"
+          placeholder="Ej: Atomicidad, Consistencia, Aislamiento y Durabilidad..."
+          [(ngModel)]="nuevaRespuesta"
+        ></textarea>
+        @if (errorPregunta) {
+          <span class="ev-error">{{ errorPregunta }}</span>
+        }
+        <button class="btn btn--secondary" (click)="agregarPregunta()">+ Agregar pregunta</button>
+      </div>
+
+      @if (pr.preguntas.length === 0) {
+        <div class="ev-empty ev-empty--sm">
+          <span class="ev-empty__icon">💬</span>
+          <p>Aún no hay preguntas teóricas. Agrega la primera arriba.</p>
+        </div>
+      }
+
+      <ul class="ev-preguntas">
+        @for (p of pr.preguntas; track p.id) {
+          <li class="ev-pregunta" style="border-left: 3px solid var(--ink)">
+            <div class="ev-pregunta__num">T{{ p.id }}</div>
+            <div class="ev-pregunta__body">
+              <p class="ev-pregunta__texto" style="font-weight: 500">{{ p.texto }}</p>
+              <details class="ev-pregunta__respuesta" open>
+                <summary style="color: var(--amber); font-weight: 600">
+                  Ver fundamento de la respuesta
+                </summary>
+                <p
+                  style="
+                    background: var(--cream);
+                    padding: 0.75rem;
+                    border-radius: var(--radius);
+                    border-left: 2px solid var(--border);
+                  "
+                >
+                  {{ p.respuestaCorrecta }}
+                </p>
+              </details>
+            </div>
+          </li>
+        }
+      </ul>
+
+      @if (pr.preguntas.length > 0) {
+        <div class="ev-resumen">
+          <span style="text-align: center; font-weight: bold; color: var(--ink)">
+            Total de reactivos teóricos disponibles en este módulo: {{ pr.preguntas.length }}
+          </span>
+        </div>
+      }
+    </section>
+  }
+</div>

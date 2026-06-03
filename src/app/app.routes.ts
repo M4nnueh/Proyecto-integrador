@@ -9,6 +9,8 @@ import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { BlogComponent } from './blog.component/blog.component';
 import { EvaluarComponent } from './evaluar/evaluar.component';
 import { Temas } from './temas/temas';
+import { AnunciosComponent } from './anuncios/anuncios.component';
+import { PreguntasComponent } from './preguntas/preguntas.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,4 +24,6 @@ export const routes: Routes = [
   { path: 'dashboard/profesor', component: DashboardProfesorComponent },
   { path: 'dashboard/admin', component: DashboardAdminComponent },
   { path: 'blog', component: BlogComponent },
+  { path: 'anuncios', component: AnunciosComponent },
+  { path: 'preguntas', component: PreguntasComponent },
 ];
