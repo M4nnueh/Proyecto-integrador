@@ -19,7 +19,7 @@ export class RegisterComponent {
   ) {}
 
   registrarse(): void {
-    // Con Keycloak, el registro se hace en la página de Keycloak
-    this.authService.login();
+    // Con Keycloak, el registro se hace en la página de Keycloak pasando el parámetro kc_action
+    this.authService.register();
   }
 }

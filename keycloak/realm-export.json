@@ -2,7 +2,10 @@
   "realm": "curso-springboot",
   "enabled": true,
   "sslRequired": "none",
-  "registrationAllowed": false,
+  "defaultRole": {
+    "name": "default-roles-curso-springboot"
+  },
+  "registrationAllowed": true,
   "loginWithEmailAllowed": true,
   "clients": [
     {
@@ -35,6 +38,14 @@
       {
         "name": "profesor",
         "description": "Profesor: imparte cursos"
+      },
+      {
+        "name": "default-roles-curso-springboot",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": ["estudiante", "offline_access"]
+        }
       }
     ]
   },
@@ -86,6 +97,56 @@
         }
       ],
       "realmRoles": ["profesor"]
+    },
+    {
+      "username": "ana.martinez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ana",
+      "lastName": "Martinez",
+      "email": "ana.martinez@numtech.com",
+      "credentials": [{"type": "password", "value": "estudiante123", "temporary": false}],
+      "realmRoles": ["estudiante"]
+    },
+    {
+      "username": "pedro.sanchez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Pedro",
+      "lastName": "Sanchez",
+      "email": "pedro.sanchez@numtech.com",
+      "credentials": [{"type": "password", "value": "estudiante123", "temporary": false}],
+      "realmRoles": ["estudiante"]
+    },
+    {
+      "username": "lucia.gomez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Lucia",
+      "lastName": "Gomez",
+      "email": "lucia.gomez@numtech.com",
+      "credentials": [{"type": "password", "value": "estudiante123", "temporary": false}],
+      "realmRoles": ["estudiante"]
+    },
+    {
+      "username": "diego.fernandez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Diego",
+      "lastName": "Fernandez",
+      "email": "diego.fernandez@numtech.com",
+      "credentials": [{"type": "password", "value": "estudiante123", "temporary": false}],
+      "realmRoles": ["estudiante"]
+    },
+    {
+      "username": "sofia.herrera",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Sofía",
+      "lastName": "Herrera",
+      "email": "sofia.herrera@numtech.com",
+      "credentials": [{"type": "password", "value": "estudiante123", "temporary": false}],
+      "realmRoles": ["estudiante"]
     }
   ]
 }
