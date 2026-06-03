@@ -88,6 +88,10 @@ export class AuthService {
     this.oauthService.initCodeFlow();
   }
 
+  public register(): void {
+    this.oauthService.initCodeFlow(undefined, { kc_action: 'register' });
+  }
+
   public logout(): void {
     this.oauthService.logOut();
     this.currentUserSubject.next(null);
