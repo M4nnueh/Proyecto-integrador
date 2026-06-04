@@ -61,7 +61,12 @@ export class PreguntasComponent {
 
   private refrescar() {
     const id = this.pruebaSeleccionada()?.id;
-    if (id !== undefined) this.pruebaSeleccionada.set(this.svc.obtenerPrueba(id) ?? null);
+    if (id !== undefined) {
+      const pruebaActualizada = this.svc.obtenerPrueba(id);
+      if (pruebaActualizada) {
+        this.pruebaSeleccionada.set(pruebaActualizada);
+      }
+    }
   }
 
   crearPrueba() {
@@ -88,10 +93,15 @@ export class PreguntasComponent {
       this.errorPregunta = 'Escribe la respuesta teórica correcta.';
       return;
     }
+
     this.svc.agregarPregunta(pr.id, this.nuevaPregunta, this.nuevaRespuesta);
+
     this.nuevaPregunta = '';
     this.nuevaRespuesta = '';
     this.errorPregunta = '';
-    this.refrescar();
+
+    setTimeout(() => {
+      this.refrescar();
+    }, 150);
   }
 }

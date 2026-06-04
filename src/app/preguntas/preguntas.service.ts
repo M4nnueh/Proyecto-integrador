@@ -1,41 +1,50 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { PruebaGeneral, PreguntaTeorica } from './preguntas.model';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PreguntasService {
-  private _pruebas = signal<PruebaGeneral[]>([]);
-  private _nextId = signal<number>(1);
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:8080/api/preguntas';
 
+  private _pruebas = signal<PruebaGeneral[]>([]);
   readonly pruebas = computed(() => this._pruebas());
 
-  crearPrueba(titulo: string): PruebaGeneral {
-    const nueva: PruebaGeneral = {
-      id: this._nextId(),
-      titulo: titulo.trim(),
-      preguntas: [],
-      fechaCreacion: new Date(),
-    };
-    this._nextId.update((id) => id + 1);
-    this._pruebas.update((lista) => [...lista, nueva]);
-    return nueva;
+  constructor() {
+    this.cargarPruebasDesdeServidor();
+  }
+
+  cargarPruebasDesdeServidor(): void {
+    this.http.get<PruebaGeneral[]>(this.apiUrl).subscribe({
+      next: (data) => this._pruebas.set(data),
+      error: (err) => console.error('Error al recuperar las pruebas del servidor', err),
+    });
+  }
+
+  crearPrueba(titulo: string): void {
+    this.http.post<PruebaGeneral>(this.apiUrl, { titulo: titulo.trim() }).subscribe({
+      error: (err) => console.error('Error al crear la prueba', err),
+    });
   }
 
   agregarPregunta(pruebaId: number, textoPregunta: string, respuestaCorrecta: string): void {
-    this._pruebas.update((lista) =>
-      lista.map((pr) => {
-        if (pr.id !== pruebaId) return pr;
-        const nuevaPregunta: PreguntaTeorica = {
-          id: pr.preguntas.length + 1,
-          texto: textoPregunta.trim(),
-          respuestaCorrecta: respuestaCorrecta.trim(),
-        };
-        return { ...pr, preguntas: [...pr.preguntas, nuevaPregunta] };
-      }),
-    );
+    const body = {
+      texto: textoPregunta.trim(),
+      respuestaCorrecta: respuestaCorrecta.trim(),
+    };
+
+    this.http.post<PreguntaTeorica>(`${this.apiUrl}/${pruebaId}/agregar`, body).subscribe({
+      next: () => this.cargarPruebasDesdeServidor(),
+      error: (err) => console.error('Error al insertar el reactivo teórico', err),
+    });
   }
 
   eliminarPrueba(id: number): void {
-    this._pruebas.update((lista) => lista.filter((pr) => pr.id !== id));
+    this.http.delete<any>(`${this.apiUrl}/${id}`).subscribe({
+      next: () => this.cargarPruebasDesdeServidor(),
+      error: (err) => console.error('Error al eliminar el banco de preguntas', err),
+    });
   }
 
   obtenerPrueba(id: number): PruebaGeneral | undefined {

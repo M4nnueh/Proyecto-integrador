@@ -36,3 +36,24 @@ VALUES
     ('Mantenimiento del sistema', 'El próximo sábado a las 2:00 AM realizaremos labores de mantenimiento en la plataforma. Esperamos que el servicio se restablezca a las 4:00 AM.'),
     ('Nuevos cursos disponibles', 'Se han abierto las inscripciones para los nuevos cursos optativos de la facultad de ingeniería. Revisa la sección de cursos para más detalles.');
 
+-- Crear tabla de Pruebas Generales
+CREATE TABLE IF NOT EXISTS pruebas_generales (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear tabla de Preguntas Teóricas vinculadas a la prueba
+CREATE TABLE IF NOT EXISTS preguntas_teoricas (
+    id SERIAL PRIMARY KEY,
+    prueba_id INT NOT NULL,
+    texto TEXT NOT NULL,
+    respuesta_correcta TEXT NOT NULL,
+    CONSTRAINT fk_prueba FOREIGN KEY(prueba_id) REFERENCES pruebas_generales(id) ON DELETE CASCADE
+);
+
+-- Datos de prueba para tus pruebas cURL
+INSERT INTO pruebas_generales (id, titulo) VALUES (1, 'Conceptos Generales de Bases de Datos') ON CONFLICT DO NOTHING;
+INSERT INTO preguntas_teoricas (prueba_id, texto, respuesta_correcta) VALUES 
+(1, '¿Qué significa ACID en bases de datos relacionales?', 'Atomicidad, Consistencia, Aislamiento y Durabilidad.')
+ON CONFLICT DO NOTHING;
