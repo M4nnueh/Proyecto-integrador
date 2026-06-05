@@ -11,12 +11,13 @@ import { EvaluarComponent } from './evaluar/evaluar.component';
 import { Temas } from './temas/temas';
 import { AnunciosComponent } from './anuncios/anuncios.component';
 import { PreguntasComponent } from './preguntas/preguntas.component';
+import { estudianteGuard } from './auth/role.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'nosotros', component: NosotrosComponent },
-  { path: 'evaluar', component: EvaluarComponent },
+  { path: 'evaluar', component: EvaluarComponent, canActivate: [estudianteGuard] },
   { path: 'temas', component: Temas },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

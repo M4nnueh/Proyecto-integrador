@@ -323,7 +323,7 @@
 
 /* ── Estrellas ─────────────────────────────────────── */
 .ev-calificacion { display: flex; flex-direction: column; gap: 0.3rem; }
-.ev-stars-row { display: flex; align-items: center; gap: 0.25rem; flex-wrap: wrap; }
+.ev-stars-row { display: flex; align-items: center; gap: 0.25rem; flex-wrap: nowrap; }
 
 .ev-star-btn {
   font-size: 1.2rem;
