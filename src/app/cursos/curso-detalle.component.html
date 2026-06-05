@@ -1,0 +1,98 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button routerLink="/temas" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-2"></i> Volver a Temas y Cursos
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+    <div class="p-5 text-white" style="background: linear-gradient(135deg, #1e293b, #334155);">
+      <div class="d-flex align-items-center gap-4">
+        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+             style="width:80px;height:80px;background:linear-gradient(135deg,#f59e0b,#ef4444);">
+          <i class="fas fa-graduation-cap fa-3x text-white"></i>
+        </div>
+        <div>
+          <span class="badge bg-warning text-dark mb-2" *ngIf="profesor">Curso en Progreso</span>
+          <span class="badge bg-danger text-white mb-2" *ngIf="!profesor">Error 404</span>
+          <h1 class="display-5 fw-bold mb-0">{{ titulo }}</h1>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body p-5">
+      <div class="row g-5">
+        <div class="col-lg-8">
+          <h3 class="fw-bold mb-3">Acerca de este curso</h3>
+          <p class="lead text-muted">{{ descripcion }}</p>
+          
+          <div class="mt-5" *ngIf="profesor">
+            <h4 class="fw-bold mb-3">Módulos del Curso</h4>
+            <div class="list-group list-group-flush border rounded">
+              <div class="list-group-item p-3 d-flex align-items-center gap-3">
+                <div class="bg-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                  <i class="fas fa-play text-primary"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold">Introducción a los conceptos</h6>
+                  <small class="text-muted">Video • 15 min</small>
+                </div>
+                <span class="badge bg-success ms-auto rounded-pill"><i class="fas fa-check"></i></span>
+              </div>
+              <div class="list-group-item p-3 d-flex align-items-center gap-3">
+                <div class="bg-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                  <i class="fas fa-file-alt text-primary"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold">Material de lectura interactivo</h6>
+                  <small class="text-muted">Lectura • 30 min</small>
+                </div>
+                <button class="btn btn-sm btn-outline-primary ms-auto rounded-pill px-3">Continuar</button>
+              </div>
+              <div class="list-group-item p-3 d-flex align-items-center gap-3 text-muted bg-light">
+                <div class="bg-white rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                  <i class="fas fa-lock text-secondary"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold text-secondary">Evaluación del módulo</h6>
+                  <small class="text-muted">Cuestionario • 20 min</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4" *ngIf="profesor">
+          <div class="card bg-light border-0 rounded-4">
+            <div class="card-body p-4 text-center">
+              <div class="mb-3 d-flex justify-content-center">
+                <div class="rounded-circle bg-white d-flex align-items-center justify-content-center shadow-sm" style="width: 80px; height: 80px;">
+                  <i class="fas fa-user-tie fa-2x text-primary"></i>
+                </div>
+              </div>
+              <h5 class="fw-bold mb-1">Docente Asignado</h5>
+              <p class="text-muted mb-0">{{ profesor }}</p>
+              
+              <hr class="my-4">
+              
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted"><i class="fas fa-clock me-2"></i>Duración</span>
+                <span class="fw-bold">4 Semanas</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted"><i class="fas fa-chart-line me-2"></i>Nivel</span>
+                <span class="fw-bold">Intermedio</span>
+              </div>
+              <div class="d-flex justify-content-between mb-4">
+                <span class="text-muted"><i class="fas fa-certificate me-2"></i>Certificado</span>
+                <span class="fw-bold">Sí</span>
+              </div>
+              
+              <button class="btn btn-primary w-100 py-2 rounded-pill fw-bold">Ir a la clase</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

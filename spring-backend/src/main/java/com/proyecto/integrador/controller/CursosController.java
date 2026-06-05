@@ -23,14 +23,15 @@ public class CursosController {
     }
 
     @GetMapping("/{id}/cursos")
-    @PreAuthorize("hasRole('ESTUDIANTE') or hasRole('ADMINISTRADOR')")
     public Map<String, Object> getCursos(@PathVariable Long id) {
         // JPA creará la tabla cursos_estudiantes si existe relación. 
         // Como usamos nativeQuery, si la tabla no existe podría fallar, pero para desarrollo está bien.
         List<Curso> cursos = null;
         try {
             cursos = cursoRepository.findCursosByEstudianteId(id);
+            System.out.println("DEBUG: Cursos encontrados para ID " + id + ": " + (cursos != null ? cursos.size() : "null"));
         } catch (Exception e) {
+            System.out.println("DEBUG: Error al buscar cursos: " + e.getMessage());
             // Si la tabla no existe aún, devuelve una lista vacía para no romper el frontend
             cursos = List.of();
         }

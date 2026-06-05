@@ -18,6 +18,9 @@ public class Curso {
 
     private String descripcion;
 
+    @Column(length = 150)
+    private String profesor;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }
@@ -26,4 +29,6 @@ public class Curso {
     public void setUrlRuta(String urlRuta) { this.urlRuta = urlRuta; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public String getProfesor() { return profesor; }
+    public void setProfesor(String profesor) { this.profesor = profesor; }
 }

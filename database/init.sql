@@ -57,3 +57,33 @@ INSERT INTO pruebas_generales (id, titulo) VALUES (1, 'Conceptos Generales de Ba
 INSERT INTO preguntas_teoricas (prueba_id, texto, respuesta_correcta) VALUES 
 (1, '¿Qué significa ACID en bases de datos relacionales?', 'Atomicidad, Consistencia, Aislamiento y Durabilidad.')
 ON CONFLICT DO NOTHING;
+
+-- Crear tabla de cursos
+CREATE TABLE IF NOT EXISTS cursos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    url_ruta VARCHAR(255),
+    descripcion TEXT,
+    profesor VARCHAR(150)
+);
+
+-- Insertar cursos de ejemplo
+INSERT INTO cursos (nombre, url_ruta, descripcion, profesor) VALUES
+    ('Polinomio de Taylor', '/cursos/taylor', 'Aproximacion de funciones reales mediante polinomios.', 'Efrain Vasquez Millan'),
+    ('Ecuaciones de 1 variable', '/cursos/ecuacion-1var', 'Metodos iterativos para resolver ecuaciones no lineales de una variable.', 'Diego Fernando Chicaiza Burbano'),
+    ('Aproximacion de un polinomio', '/cursos/aproximacion', 'Interpolacion y aproximacion polinomial de conjuntos de datos.', 'Efrain Vasquez Millan')
+ON CONFLICT DO NOTHING;
+
+-- Crear tabla de relacion estudiantes-cursos
+CREATE TABLE IF NOT EXISTS cursos_estudiantes (
+    curso_id INT NOT NULL,
+    estudiante_id INT NOT NULL,
+    PRIMARY KEY (curso_id, estudiante_id),
+    CONSTRAINT fk_curso FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE CASCADE,
+    CONSTRAINT fk_estudiante FOREIGN KEY (estudiante_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- Inscribir todos los estudiantes en todos los cursos
+INSERT INTO cursos_estudiantes (curso_id, estudiante_id)
+SELECT c.id, u.id FROM cursos c, usuarios u WHERE u.rol = 'estudiante'
+ON CONFLICT DO NOTHING;

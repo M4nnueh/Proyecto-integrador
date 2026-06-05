@@ -9,8 +9,10 @@ import { DashboardAdminComponent } from './dashboard-admin/dashboard-admin';
 import { BlogComponent } from './blog.component/blog.component';
 import { EvaluarComponent } from './evaluar/evaluar.component';
 import { Temas } from './temas/temas';
+import { TemaDetalleComponent } from './temas/tema-detalle/tema-detalle';
 import { AnunciosComponent } from './anuncios/anuncios.component';
 import { PreguntasComponent } from './preguntas/preguntas.component';
+import { CursoDetalleComponent } from './cursos/curso-detalle.component';
 import { estudianteGuard } from './auth/role-guard';
 
 export const routes: Routes = [
@@ -19,6 +21,8 @@ export const routes: Routes = [
   { path: 'nosotros', component: NosotrosComponent },
   { path: 'evaluar', component: EvaluarComponent, canActivate: [estudianteGuard] },
   { path: 'temas', component: Temas },
+  { path: 'temas/:id', component: TemaDetalleComponent },
+  { path: 'cursos/:slug', component: CursoDetalleComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard/estudiante', component: DashboardEstudianteComponent },

@@ -1,0 +1,17 @@
+.tema-content {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #333;
+}
+.tema-content h4 {
+  color: #0d6efd;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+.tema-content code {
+  background-color: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  color: #e83e8c;
+}
