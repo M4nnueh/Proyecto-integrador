@@ -1,5 +1,6 @@
 <div class="ev-shell">
 
+  <!-- Cabecera -->
   <div class="ev-header">
     <span class="ev-logo">📝</span>
     <div>
@@ -9,69 +10,119 @@
   </div>
 
   <!-- Barra de progreso -->
-  <div class="ev-progreso-wrapper">
-    <div class="ev-progreso-info">
-      <span>Progreso</span>
-      <span>{{ evaluacion().preguntas.filter(p => p.calificacion !== null).length }} / {{ evaluacion().preguntas.length }} respondidas</span>
+  @if (!evaluacion().enviada) {
+    <div class="ev-progreso-wrapper">
+      <div class="ev-progreso-info">
+        <span>Progreso</span>
+        <span>{{ evaluacion().preguntas.filter(p => p.respuestaEstudiante !== null).length }} / {{ evaluacion().preguntas.length }} respondidas</span>
+      </div>
+      <div class="ev-progress">
+        <div class="ev-progress__bar" [style.width.%]="porcentajeCompletado()"></div>
+      </div>
     </div>
-    <div class="ev-progress">
-      <div class="ev-progress__bar" [style.width.%]="porcentajeCompletado()"></div>
-    </div>
-  </div>
+  }
 
-  <!-- Lista de preguntas -->
-  <ul class="ev-preguntas">
-    @for (p of evaluacion().preguntas; track p.id) {
-      <li class="ev-pregunta" [class.ev-pregunta--calificada]="p.calificacion !== null">
+  <!-- Preguntas -->
+  @if (!evaluacion().enviada) {
+    <ul class="ev-preguntas">
+      @for (p of evaluacion().preguntas; track p.id) {
+        <li class="ev-pregunta" [class.ev-pregunta--respondida]="p.respuestaEstudiante !== null">
 
-        <div class="ev-pregunta__header">
-          <span class="ev-pregunta__num">Pregunta {{ p.id }}</span>
-          @if (p.calificacion !== null) {
-            <span class="ev-nota-badge" [class]="colorNota(p.calificacion)">
-              {{ p.calificacion }}/5 {{ estrellas(p.calificacion) }}
-            </span>
-          }
-        </div>
+          <div class="ev-pregunta__header">
+            <span class="ev-pregunta__num">Pregunta {{ p.id }}</span>
+            @if (p.respuestaEstudiante !== null) {
+              <span class="ev-respondida-badge">✓ Respondida</span>
+            }
+          </div>
 
-        <p class="ev-pregunta__texto">{{ p.texto }}</p>
+          <p class="ev-pregunta__texto">{{ p.texto }}</p>
 
-        <details class="ev-pregunta__respuesta">
-          <summary>Ver respuesta correcta</summary>
-          <p>{{ p.respuestaCorrecta }}</p>
-        </details>
-
-        <!-- Calificación -->
-        <div class="ev-calificacion">
-          <label class="ev-label">Calificación (0–5):</label>
-          <div class="ev-stars-row">
-            @for (n of [0,1,2,3,4,5]; track n) {
+          <div class="ev-opciones">
+            @for (op of p.opciones; track op.id) {
               <button
-                class="ev-star-btn"
-                [class.ev-star-btn--on]="p.calificacion !== null && n <= p.calificacion"
-                (click)="asignarCalificacion(p.id, n)"
-                [title]="n + '/5'">
-                {{ n === 0 ? '✕' : '★' }}
+                class="ev-opcion"
+                [class.ev-opcion--seleccionada]="p.respuestaEstudiante === op.id"
+                (click)="responder(p.id, op.id)">
+                <span class="ev-opcion__letra">{{ op.id.toUpperCase() }}</span>
+                <span class="ev-opcion__texto">{{ op.texto }}</span>
               </button>
             }
           </div>
-        </div>
 
-      </li>
-    }
-  </ul>
+        </li>
+      }
+    </ul>
 
-  <!-- Resultado final -->
-  @if (evaluacion().calificacionFinal !== null) {
-    <div class="ev-resultado" [class]="colorNota(evaluacion().calificacionFinal)">
-      <div class="ev-resultado__inner">
-        <span class="ev-resultado__label">Nota Final</span>
-        <span class="ev-resultado__valor">{{ evaluacion().calificacionFinal | number:'1.2-2' }} / 5</span>
-        <span class="ev-resultado__estrellas">{{ estrellas(evaluacion().calificacionFinal) }}</span>
-      </div>
-      <button class="btn btn--secondary" (click)="reiniciar()">Reiniciar evaluación</button>
+    <!-- Botón enviar -->
+    <div class="ev-enviar-wrapper">
+      @if (!todasRespondidas()) {
+        <p class="ev-pending">Responde todas las preguntas para enviar la evaluación.</p>
+      }
+      <button
+        class="btn btn--primary btn--lg"
+        [disabled]="!todasRespondidas()"
+        (click)="enviar()">
+        Enviar evaluación
+      </button>
     </div>
-  } @else {
-    <p class="ev-pending">Califica todas las preguntas para ver tu nota final.</p>
+  }
+
+  <!-- Resultados -->
+  @if (evaluacion().enviada) {
+    <div class="ev-resultado-header" [class]="colorNota(evaluacion().calificacionFinal)">
+      <div class="ev-resultado-header__inner">
+        <span class="ev-resultado-header__label">Nota Final</span>
+        <span class="ev-resultado-header__valor">{{ evaluacion().calificacionFinal | number:'1.2-2' }} / 5</span>
+        <span class="ev-resultado-header__estrellas">{{ estrellas(evaluacion().calificacionFinal) }}</span>
+      </div>
+      <p class="ev-resultado-header__detalle">
+        {{ correctas() }} de {{ evaluacion().preguntas.length }} preguntas correctas
+      </p>
+    </div>
+
+    <ul class="ev-preguntas">
+      @for (p of evaluacion().preguntas; track p.id) {
+        <li class="ev-pregunta"
+            [class.ev-pregunta--correcta]="p.esCorrecta === true"
+            [class.ev-pregunta--incorrecta]="p.esCorrecta === false">
+
+          <div class="ev-pregunta__header">
+            <span class="ev-pregunta__num">Pregunta {{ p.id }}</span>
+            @if (p.esCorrecta) {
+              <span class="ev-badge-correcto">✓ Correcta</span>
+            } @else {
+              <span class="ev-badge-incorrecto">✗ Incorrecta</span>
+            }
+          </div>
+
+          <p class="ev-pregunta__texto">{{ p.texto }}</p>
+
+          <div class="ev-opciones">
+            @for (op of p.opciones; track op.id) {
+              <div class="ev-opcion ev-opcion--resultado"
+                [class.ev-opcion--correcta]="op.id === p.respuestaCorrecta"
+                [class.ev-opcion--incorrecta]="op.id === p.respuestaEstudiante && !p.esCorrecta">
+                <span class="ev-opcion__letra">{{ op.id.toUpperCase() }}</span>
+                <span class="ev-opcion__texto">{{ op.texto }}</span>
+                @if (op.id === p.respuestaCorrecta) {
+                  <span class="ev-opcion__tag">✓ Correcta</span>
+                }
+                @if (op.id === p.respuestaEstudiante && !p.esCorrecta) {
+                  <span class="ev-opcion__tag ev-opcion__tag--mal">✗ Tu respuesta</span>
+                }
+              </div>
+            }
+          </div>
+
+        </li>
+      }
+    </ul>
+
+    <div class="ev-reiniciar-wrapper">
+      <button class="btn btn--secondary btn--lg" (click)="reiniciar()">
+        Intentar de nuevo
+      </button>
+    </div>
   }
 
 </div>

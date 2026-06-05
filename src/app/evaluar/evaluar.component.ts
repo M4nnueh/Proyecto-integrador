@@ -13,13 +13,20 @@ export class EvaluarComponent {
   private svc = inject(EvaluarService);
   readonly evaluacion = this.svc.evaluacion;
 
-  asignarCalificacion(preguntaId: number, valor: number) {
-    if (valor < 0 || valor > 5) return;
-    this.svc.asignarCalificacion(preguntaId, valor);
+  responder(preguntaId: number, opcionId: string) {
+    this.svc.responderPregunta(preguntaId, opcionId);
+  }
+
+  enviar() {
+    this.svc.enviarEvaluacion();
   }
 
   reiniciar() {
     this.svc.reiniciarEvaluacion();
+  }
+
+  todasRespondidas(): boolean {
+    return this.svc.todasRespondidas();
   }
 
   estrellas(nota: number | null): string {
@@ -39,7 +46,11 @@ export class EvaluarComponent {
     const ev = this.evaluacion();
     if (!ev.preguntas.length) return 0;
     return Math.round(
-      (ev.preguntas.filter(p => p.calificacion !== null).length / ev.preguntas.length) * 100
+      (ev.preguntas.filter(p => p.respuestaEstudiante !== null).length / ev.preguntas.length) * 100
     );
+  }
+
+  correctas(): number {
+    return this.evaluacion().preguntas.filter(p => p.esCorrecta === true).length;
   }
 }
