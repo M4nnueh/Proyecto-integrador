@@ -9,8 +9,30 @@
     </div>
   </div>
 
+  <!-- Cargando -->
+  @if (cargando()) {
+    <div class="ev-loading">
+      <span class="ev-loading__spinner"></span>
+      <p>Cargando evaluación...</p>
+    </div>
+  }
+
+  <!-- Error al guardar -->
+  @if (error()) {
+    <div class="ev-alert ev-alert--error">
+      ⚠️ {{ error() }}
+    </div>
+  }
+
+  <!-- Guardado exitoso -->
+  @if (guardado() && evaluacion().enviada) {
+    <div class="ev-alert ev-alert--success">
+      ✓ Resultado guardado correctamente en el servidor.
+    </div>
+  }
+
   <!-- Barra de progreso -->
-  @if (!evaluacion().enviada) {
+  @if (!evaluacion().enviada && !cargando()) {
     <div class="ev-progreso-wrapper">
       <div class="ev-progreso-info">
         <span>Progreso</span>
@@ -23,7 +45,7 @@
   }
 
   <!-- Preguntas -->
-  @if (!evaluacion().enviada) {
+  @if (!evaluacion().enviada && !cargando()) {
     <ul class="ev-preguntas">
       @for (p of evaluacion().preguntas; track p.id) {
         <li class="ev-pregunta" [class.ev-pregunta--respondida]="p.respuestaEstudiante !== null">

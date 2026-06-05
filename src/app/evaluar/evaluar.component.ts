@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EvaluarService } from './evaluar.service';
 
@@ -9,9 +9,17 @@ import { EvaluarService } from './evaluar.service';
   templateUrl: './evaluar.component.html',
   styleUrl: './evaluar.component.css',
 })
-export class EvaluarComponent {
+export class EvaluarComponent implements OnInit {
   private svc = inject(EvaluarService);
+
   readonly evaluacion = this.svc.evaluacion;
+  readonly cargando = this.svc.cargando;
+  readonly guardado = this.svc.guardado;
+  readonly error = this.svc.error;
+
+  ngOnInit(): void {
+    this.svc.cargarDesdeBackend();
+  }
 
   responder(preguntaId: number, opcionId: string) {
     this.svc.responderPregunta(preguntaId, opcionId);
