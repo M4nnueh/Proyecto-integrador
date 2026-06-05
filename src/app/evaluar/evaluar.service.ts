@@ -1,63 +1,53 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { Evaluacion, Pregunta } from './evaluar.model';
+import { Evaluacion, CUESTIONARIO_PREDETERMINADO } from './evaluar.model';
 
 @Injectable({ providedIn: 'root' })
 export class EvaluarService {
-  private _evaluaciones = signal<Evaluacion[]>([]);
-  private _nextId = signal<number>(1);
+  private _evaluacion = signal<Evaluacion>({
+    ...CUESTIONARIO_PREDETERMINADO,
+    preguntas: CUESTIONARIO_PREDETERMINADO.preguntas.map(p => ({ ...p })),
+    fechaCreacion: new Date(),
+  });
 
-  readonly evaluaciones = computed(() => this._evaluaciones());
+  readonly evaluacion = computed(() => this._evaluacion());
 
-  crearEvaluacion(titulo: string): Evaluacion {
-    const nueva: Evaluacion = {
-      id: this._nextId(),
-      titulo: titulo.trim(),
-      preguntas: [],
+  responderPregunta(preguntaId: number, opcionId: string): void {
+    this._evaluacion.update((ev) => {
+      if (ev.enviada) return ev;
+      const preguntas = ev.preguntas.map((p) =>
+        p.id === preguntaId ? { ...p, respuestaEstudiante: opcionId } : p
+      );
+      return { ...ev, preguntas };
+    });
+  }
+
+  enviarEvaluacion(): void {
+    this._evaluacion.update((ev) => {
+      const preguntas = ev.preguntas.map((p) => ({
+        ...p,
+        esCorrecta: p.respuestaEstudiante === p.respuestaCorrecta
+      }));
+      const correctas = preguntas.filter(p => p.esCorrecta).length;
+      const calificacionFinal = (correctas / preguntas.length) * 5;
+      return { ...ev, preguntas, calificacionFinal, enviada: true };
+    });
+  }
+
+  reiniciarEvaluacion(): void {
+    this._evaluacion.set({
+      ...CUESTIONARIO_PREDETERMINADO,
+      preguntas: CUESTIONARIO_PREDETERMINADO.preguntas.map(p => ({
+        ...p,
+        respuestaEstudiante: null,
+        esCorrecta: null
+      })),
       fechaCreacion: new Date(),
       calificacionFinal: null,
-    };
-    this._nextId.update((id) => id + 1);
-    this._evaluaciones.update((lista) => [...lista, nueva]);
-    return nueva;
+      enviada: false,
+    });
   }
 
-  agregarPregunta(evaluacionId: number, textoPregunta: string, respuestaCorrecta: string): void {
-    this._evaluaciones.update((lista) =>
-      lista.map((ev) => {
-        if (ev.id !== evaluacionId) return ev;
-        const nuevaPregunta: Pregunta = {
-          id: ev.preguntas.length + 1,
-          texto: textoPregunta.trim(),
-          respuestaCorrecta: respuestaCorrecta.trim(),
-          calificacion: null,
-        };
-        return { ...ev, preguntas: [...ev.preguntas, nuevaPregunta] };
-      })
-    );
-  }
-
-  asignarCalificacion(evaluacionId: number, preguntaId: number, calificacion: number): void {
-    this._evaluaciones.update((lista) =>
-      lista.map((ev) => {
-        if (ev.id !== evaluacionId) return ev;
-        const preguntas = ev.preguntas.map((p) =>
-          p.id === preguntaId ? { ...p, calificacion } : p
-        );
-        const calificadas = preguntas.filter((p) => p.calificacion !== null);
-        const calificacionFinal =
-          calificadas.length === preguntas.length && preguntas.length > 0
-            ? calificadas.reduce((sum, p) => sum + (p.calificacion ?? 0), 0) / preguntas.length
-            : null;
-        return { ...ev, preguntas, calificacionFinal };
-      })
-    );
-  }
-
-  eliminarEvaluacion(id: number): void {
-    this._evaluaciones.update((lista) => lista.filter((ev) => ev.id !== id));
-  }
-
-  obtenerEvaluacion(id: number): Evaluacion | undefined {
-    return this._evaluaciones().find((ev) => ev.id === id);
+  todasRespondidas(): boolean {
+    return this._evaluacion().preguntas.every(p => p.respuestaEstudiante !== null);
   }
 }
