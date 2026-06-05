@@ -7,6 +7,7 @@ export interface Curso {
   nombre: string;
   urlRuta: string;
   descripcion?: string;
+  profesor?: string;
 }
 
 export interface CursosResponse {

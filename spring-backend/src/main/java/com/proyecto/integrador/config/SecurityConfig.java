@@ -33,6 +33,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // Temas son de lectura pública para usuarios de la app
+                .requestMatchers(HttpMethod.GET, "/api/temas", "/api/temas/**").permitAll()
                 // El resto de la API requiere autenticación
                 .anyRequest().authenticated()
             )

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { HeaderComponent } from '../components/header/header.component';
-import { EstudianteService, Curso } from '../services/estudiante.service';
 import { AuthService, User } from '../services/auth.service';
 import { combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
@@ -17,12 +16,9 @@ import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 export class DashboardEstudianteComponent implements OnInit, OnDestroy {
   rol = 'Estudiante';
   usuario: User | null = null;
-  cursos: Curso[] = [];
-  isLoadingCursos = true;
   private destroy$ = new Subject<void>();
 
   constructor(
-    private estudianteService: EstudianteService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -37,16 +33,9 @@ export class DashboardEstudianteComponent implements OnInit, OnDestroy {
       this.usuario = user;
 
       if (user?.rol !== 'estudiante') {
-        this.limpiarEstado();
         const dashboardRoute = this.authService.getDashboardRoute(user);
         this.router.navigateByUrl(dashboardRoute || '/login', { replaceUrl: true });
         return;
-      }
-
-      if (user.id) {
-        this.cargarCursos(user.id);
-      } else {
-        this.limpiarEstado();
       }
     });
   }
@@ -54,26 +43,5 @@ export class DashboardEstudianteComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  cargarCursos(id: number): void {
-    this.isLoadingCursos = true;
-    this.estudianteService.getCursos(id).subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.cursos = res.cursos;
-        }
-        this.isLoadingCursos = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar cursos:', err);
-        this.isLoadingCursos = false;
-      }
-    });
-  }
-
-  private limpiarEstado(): void {
-    this.cursos = [];
-    this.isLoadingCursos = false;
   }
 }
